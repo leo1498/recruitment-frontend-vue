@@ -2,43 +2,87 @@
    <section class="container blog">
       <h2 class="blog__title">Blog</h2>
 
-      <ArticleSearch />
-      
-      <div class="blog__wrapper">   
-         <ArticleListItem 
-         v-for="(article, index) of articles.items"
-         :article="article"
-         :key="index"
-         />
+      <!-- Search -->
+      <ArticleSearch v-model="search" v-on:input="search = $event" />
+
+      <!-- Loader -->
+      <Loader v-if="loading" />
+
+      <!-- If something is wrong -->
+      <div v-else-if="dataStatusError">
+         <FetchDataError :dataErrMsg="dataErrorMsg" />
+      </div>
+
+      <div v-else>
+
+         <!-- Blog news items -->
+         <div v-if="filterArticles.length" class="blog__wrapper">   
+            <ArticleListItem 
+               v-for="(article, index) in filterArticles"
+               :article="article"
+               :key="index"
+            />
+         </div>
+
+         <!-- If not found -->
+         <p v-else class="blog__not-found">No news found :(</p>
       </div>
    </section>
 </template>
 
 <script>
-import ArticleListItem from './ArticleListItem';
-import ArticleSearch from './ArticleSearch';
+import ArticleListItem from "./ArticleListItem";
+import ArticleSearch from "./ArticleSearch";
+import FetchDataError from "./FetchDataError";
+import Loader from "@/Loader";
 
 export default {
    name: "FeedPreviewListTpl",
    components: {
-      ArticleListItem, ArticleSearch
+      ArticleListItem,
+      ArticleSearch,
+      FetchDataError,
+      Loader,
    },
-   props: ["url"],
+   props: ["url"], // get rss URL
    data() {
       return {
-         articles: [],
+         articles: [], // arroy for news
+         search: "", // string for filter search
+         dataStatusError: false, // error checking data receiving
+         dataErrorMsg: '', // fetch data error message
+         loading: true, // loader
       }
    },
-   mounted() {
+   async mounted() {
       // vue-rss-parser is an alternative way. But I used API rss2json
-      fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.url}%2Frss`)
-         .then(response => response.json())
-         .then(json => this.articles = json);    
+      await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.url}%2Frss`)
+         .then(res => {
+            if (res.status == 200) {
+               return res.json()
+            } else {
+               this.dataStatusError = true; // enable error component
+               throw new Error(`${res.status} | ${res.url}`);
+            }
+         })
+         .then(json => this.articles = json.items)
+         .catch(error => this.dataErrorMsg = error); // error message text
+         this.loading = false; // disable loader
+   },
+   computed: {
+      // news search method
+      filterArticles() {
+         return this.articles.filter(article => 
+            article.title.toLowerCase().includes(this.search.toLowerCase())
+         );
+      }
    }
 };
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/variables.scss";
+
 .blog{
 
    &__title{
@@ -49,8 +93,8 @@ export default {
       line-height: 1.3;
       position: relative;
 
-       &::before{
-         content: '';
+      &::before{
+         content: "";
          position: absolute;
          top: 50%;
          left: 50%;
@@ -58,7 +102,7 @@ export default {
          width: 100px;
          height: 100px;
          border-radius: 50%;
-         background-color: #5D86DE;
+         background-color: map-get($map: $colors, $key: primary);
          z-index: -1;
          animation: .5s circle ease-in-out;
       }
@@ -71,43 +115,24 @@ export default {
       flex-wrap: wrap;
       margin: 40px 0;
       position: relative;
+   }
+
+   &__not-found{
+      padding-top: 30px;
+      text-align: center;
+      font-size: 2rem;
+      color: #999;
       animation: .5s appear;
-
-      &::before{
-         content: 'Search';
-         position: absolute;
-         top: 0;
-         left: 50%;
-         transform: translateX(-50%);
-         font-size: 20rem;
-         color: rgba(0,0,0,.02);
-         line-height: 0;
-         font-weight: 900;
-         letter-spacing: 5px;
-         letter-spacing: 5px;
-         z-index: -1;
-      }
    }
+}
 
-   @keyframes circle{
-      0% {
-         transform: translate(-50%, -50%) scale(0);
-         transform-origin: center;
-      }
-      100% {
-         transform: translate(-50%, -50%) scale(1);
-      }
+@keyframes circle{
+   0% {
+      transform: translate(-50%, -50%) scale(0);
+      transform-origin: center;
    }
-
-   @keyframes appear{
-      0% {
-         opacity: 0;
-         transform: translateY(30px);
-      }
-      100% {
-         opacity: 1;
-         transform: translateY(0);
-      }
+   100% {
+      transform: translate(-50%, -50%) scale(1);
    }
 }
 </style>

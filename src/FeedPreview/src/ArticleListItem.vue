@@ -1,11 +1,10 @@
 <template>
    <article class="blog-item">
-      <div class="blog-item__picture">
+      <a :href="article.link" target="_blank" class="blog-item__picture">
          <img :src="article.enclosure.link" :alt="article.title" />
-      </div>
+      </a>
       <div class="blog-item__content">
-         <h3 class="blog-item__title">{{ article.title }}</h3>
-         <!-- <div v-html="article.description" class="blog-item__desc"></div> -->
+         <a :href="article.link" target="_blank" class="blog-item__title">{{ article.title }}</a>
          <time :datetime="article.pubDate" class="blog-item__date">{{article.pubDate}}</time>
       </div>
    </article>      
@@ -13,7 +12,7 @@
 
 <script>
 export default {
-   name: "FeedPreviewListTpl",
+   name: "ArticleListItemTpl",
    props: {
       article: {
          type: Object,
@@ -24,14 +23,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/variables.scss";
+
 .blog-item{
-   width: 50%;
+   width: 100%;
    max-width: 480px;
-   margin: 20px;
+   margin: 15px 0;
    background-color: #fff;
    box-shadow: 0 7px 20px 4px rgba(0,0,0,.07);
    border-radius: 7px;
    overflow: hidden;
+   animation: .5s appear;
+
+   @media #{$mobile} {
+      width: 50%;
+      margin: 20px;
+   }
 
    &:hover{
       .blog-item__picture{
@@ -43,11 +50,14 @@ export default {
    }
 
    &__picture{
+      display: block;
       margin-bottom: 20px;
-      border-bottom: 5px solid #5D86DE;
+      border-bottom: 5px solid map-get($map: $colors, $key: primary);
       overflow: hidden;
       will-change: transform;
+
       img{
+         display: block;
          max-width: 100%;
          transition: opacity .3s ease-in-out, transform .3s ease-in-out;
       }
@@ -58,9 +68,11 @@ export default {
    }
 
    &__title{
+      display: block;
       margin-bottom: 20px;
       font-size: 1.6rem;
       line-height: 1.5;
+      font-weight: 700;
    }
 
    &__date{
