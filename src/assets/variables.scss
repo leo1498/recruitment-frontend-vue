@@ -12,17 +12,6 @@ $colors: (
 
 $fontComfortaa: 'Montserrat', sans-serif;
 
-@keyframes appear{
-   0% {
-      opacity: 0;
-      transform: translateY(30px);
-   }
-   100% {
-      opacity: 1;
-      transform: translateY(0);
-   }
-}
-
 .container{
    margin-left: 15px;
    margin-right: 15px;
@@ -42,5 +31,16 @@ $fontComfortaa: 'Montserrat', sans-serif;
       margin-left: auto;
       margin-right: auto;
       max-width: 1600px;
+   }
+}
+
+@keyframes appear{
+   0% {
+      opacity: 0;
+      transform: translateY(30px);
+   }
+   100% {
+      opacity: 1;
+      transform: translateY(0);
    }
 }
