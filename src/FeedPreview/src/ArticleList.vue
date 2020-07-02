@@ -1,5 +1,6 @@
 <template>
-   <section class="container blog">
+<div class="blog">
+   <section class="container">
       <h2 class="blog__title">Blog</h2>
 
       <!-- Search -->
@@ -28,6 +29,7 @@
          <p v-else class="blog__not-found">No news found :(</p>
       </div>
    </section>
+</div>
 </template>
 
 <script>
@@ -47,7 +49,7 @@ export default {
    props: ["url"], // get rss URL
    data() {
       return {
-         articles: [], // arroy for news
+         articles: [], // array for news
          search: "", // string for filter search
          dataStatusError: false, // error checking data receiving
          dataErrorMsg: '', // fetch data error message
@@ -59,7 +61,7 @@ export default {
       await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.url}%2Frss`)
          .then(res => {
             if (res.status == 200) {
-               return res.json()
+               return res.json();
             } else {
                this.dataStatusError = true; // enable error component
                throw new Error(`${res.status} | ${res.url}`);
@@ -84,6 +86,7 @@ export default {
 @import "@/assets/variables.scss";
 
 .blog{
+   overflow-x: hidden;
 
    &__title{
       margin: 20px 0;
@@ -118,11 +121,14 @@ export default {
    }
 
    &__not-found{
-      padding-top: 30px;
       text-align: center;
       font-size: 2rem;
       color: #999;
       animation: .5s appear;
+
+      @media #{$mobile} {
+         padding-top: 30px;
+      }
    }
 }
 

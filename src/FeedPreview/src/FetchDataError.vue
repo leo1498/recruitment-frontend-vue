@@ -10,7 +10,7 @@
 
 <script>
 export default {
-   props: ["dataErrMsg"],
+   props: ["dataErrMsg"], // error text
    methods: {
       // Instead of calling a method to get data from the server, I reload the page
       reloadPage() {
@@ -31,7 +31,7 @@ export default {
       width: 100%;
       max-width: 480px;
       margin: 30px 0;
-      padding: 20px 30px;
+      padding: 30px;
       background-color: #eee;
       color: #222;
       font-weight: 300;

@@ -16,7 +16,7 @@
 <script>
 export default {
    name: "FeedPreviewSearchTpl",
-   props: ['search']
+   props: ["search"]
 };
 </script>
 
@@ -34,7 +34,7 @@ export default {
       left: 50%;
       transform: translateX(-50%);
       font-size: 20rem;
-      color: rgba(0,0,0,.02);
+      color: rgba(0,0,0,.03);
       line-height: 0;
       font-weight: 900;
       letter-spacing: 5px;
@@ -59,12 +59,14 @@ export default {
       padding: 15px 5px;
       border: none;
       background-color: transparent;
-      border-bottom: 2px solid #93A4B1;
+      border-bottom: 2px solid #AFC4D3;
+      border-radius: 0;
       outline: none;
       text-align: center;
       font-weight: 700;
       font-size: 3rem;
       position: relative;
+      -webkit-appearance: none;
 
       &:not(:placeholder-shown) + label,
       &:focus + label{
@@ -73,7 +75,7 @@ export default {
       }
 
       &:focus ~ .line-ripple{
-         transform: scaleX(1) !important;
+         transform: scaleX(1);
       }
    }
 

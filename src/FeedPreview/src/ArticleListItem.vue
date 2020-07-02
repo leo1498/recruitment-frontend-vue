@@ -5,18 +5,25 @@
       </a>
       <div class="blog-item__content">
          <a :href="article.link" target="_blank" class="blog-item__title">{{ article.title }}</a>
-         <time :datetime="article.pubDate" class="blog-item__date">{{article.pubDate}}</time>
+         <time :datetime="article.pubDate" class="blog-item__date">{{ article.pubDate | date }}</time>
       </div>
    </article>      
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
    name: "ArticleListItemTpl",
    props: {
       article: {
          type: Object,
          required: true
+      }
+   },
+   filters: {
+      date: function(date) {
+         return moment(date).format('MMMM Do YYYY, h:mm a');
       }
    }
 };

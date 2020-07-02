@@ -11,13 +11,9 @@ App.components = {
 };
 
 // sanbox
-if (process.env.NODE_ENV == "development") {
+// if (process.env.NODE_ENV == "development") {
   const Sandbox = () => import('./Sandbox/components/Sandbox.vue')
   App.render = h => h(Sandbox)
-}
-//
-// else
-//
-
+// }
 
 new Vue(App).$mount('#app')
